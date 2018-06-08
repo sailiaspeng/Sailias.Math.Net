@@ -6,8 +6,19 @@ using System.Threading.Tasks;
 
 namespace Sailias.Math
 {
-    public class Matrix
+    public class Matrix:ICloneable
     {
+        /// <summary>
+        /// 默认构造，初始化零矩阵[0]
+        /// </summary>
+        public Matrix()
+        {
+            this._rowCount = 1;
+            this._colCount = 1;
+            this._value = new double[0][];
+            this._value[0] = new double[1];
+            this._value[0][0] = 0;
+        }
         /// <summary>
         /// 矩阵构造方法，如a[0][0]=1,a[0][1]=2,a[1][0]=-1,a[1][1]=1 格式为Matrix(2,2,[1,2,-1,1]) 若值不够，则默认填充0
         /// </summary>
@@ -68,8 +79,43 @@ namespace Sailias.Math
         {
             get
             {
-                return this._rank;
+                if (this._rank != null)
+                    return this._rank;
+                else return null;
             }
+            set
+            {
+                this._rank = new Matrix();
+            }
+
+        }
+        public Matrix Add(Matrix matrix)
+        {
+            if (this.RowCount != matrix.RowCount || this.ColCount != matrix.ColCount)
+            {
+                return null;
+            }
+            else
+            {
+                double[] result = new double[this.RowCount * this.ColCount];
+                int length = 0;
+                for (int i = 0; i < this.RowCount; i++)
+                {
+                    for (int j = 0; j < this.ColCount; j++)
+                    {
+                        result[length] = this.Value[i][j]+matrix.Value[i][j];
+                        length++;
+                    }
+                }
+                return new Matrix(this.RowCount, this.ColCount, result);
+            }
+        }
+
+        public object Clone()
+        {
+            Matrix m=new  Matrix(this.RowCount, this.ColCount,new double[0]);
+            m._value = this._value;
+            return m;
         }
     }
 }
